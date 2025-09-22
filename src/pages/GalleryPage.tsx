@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Play, ExternalLink } from 'lucide-react';
+import { Play, X } from 'lucide-react';
 
 const GalleryPage = () => {
   const [selectedType, setSelectedType] = useState<'videos' | 'images'>('videos');
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   const videos = [
     {
@@ -134,11 +135,15 @@ const GalleryPage = () => {
   ];
 
   const handleVideoClick = (videoId: string) => {
-    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+    setSelectedVideo(videoId);
+  };
+
+  const closeModal = () => {
+    setSelectedVideo(null);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-20 relative">
       {/* Hero Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -208,9 +213,6 @@ const GalleryPage = () => {
                     <div className="absolute bottom-4 right-4 bg-black/80 text-white px-2 py-1 rounded text-sm">
                       {video.duration}
                     </div>
-                    <div className="absolute top-4 right-4">
-                      <ExternalLink className="text-white" size={16} />
-                    </div>
                   </div>
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors duration-300">
@@ -276,6 +278,30 @@ const GalleryPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Video Modal */}
+      {selectedVideo && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="relative w-full max-w-4xl bg-white rounded-xl overflow-hidden">
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors duration-200"
+            >
+              <X size={20} />
+            </button>
+            <div className="aspect-video">
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1`}
+                title="Video Player"
+                className="w-full h-full"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

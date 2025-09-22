@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Play, ArrowRight, ExternalLink } from 'lucide-react';
+import { Play, ArrowRight, X } from 'lucide-react';
 
 const AcademyGallerySection = () => {
   const [selectedType, setSelectedType] = useState<'videos' | 'images'>('videos');
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   const videos = [
     {
@@ -47,11 +48,15 @@ const AcademyGallerySection = () => {
   ];
 
   const handleVideoClick = (videoId: string) => {
-    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+    setSelectedVideo(videoId);
+  };
+
+  const closeModal = () => {
+    setSelectedVideo(null);
   };
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 bg-gray-50 relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -114,9 +119,6 @@ const AcademyGallerySection = () => {
                   <div className="absolute bottom-4 right-4 bg-black/80 text-white px-2 py-1 rounded text-sm">
                     {video.duration}
                   </div>
-                  <div className="absolute top-4 right-4">
-                    <ExternalLink className="text-white" size={16} />
-                  </div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors duration-300">
@@ -163,6 +165,30 @@ const AcademyGallerySection = () => {
           </a>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {selectedVideo && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="relative w-full max-w-4xl bg-white rounded-xl overflow-hidden">
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors duration-200"
+            >
+              <X size={20} />
+            </button>
+            <div className="aspect-video">
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedVideo}?autoplay=1`}
+                title="Video Player"
+                className="w-full h-full"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
